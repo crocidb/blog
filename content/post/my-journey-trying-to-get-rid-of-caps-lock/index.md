@@ -1,7 +1,8 @@
 ---
-title: "On the quest to kill the caps lock"
+title: "My journey trying to get rid of Caps Lock"
+description: "Frustrated by the useless Caps Lock key, I went down a deep rabbit hole to remap it to Escape and a custom modifier layer across all my devices. This post explores my journey from shorting pins to flash QMK firmware on mechanical keyboards, to configuring keyd on Linux and Kanata on Windows."
 date: 2026-03-13
-draft: true
+thumb: images/Pastedimage20260313144708.png
 tags:
     - hacking
     - investigation
@@ -10,24 +11,25 @@ tags:
     - linux
 ---
 
-The first time I've ever used a typewriter, it was already a vintage device. It was my aunt's old machine, and I suspect it was already pretty much gimmicky by her time too. For a kid who had no computer in the late 90s, it was really cool to sit down and bash my tiny fingers to get some barely visible text on a A4 paper. 
+The first time I ever used a typewriter, it was already a vintage device. It was my aunt's old machine, and I suspect it was already pretty much gimmicky by her time too. For a kid who had no computer in the late 90s, it was really cool to sit down and bash my tiny fingers to get some barely visible text on an A4 paper. 
 
 Sorry _mechanical keyboards_, none of your fancy colorful switches could even scratch the difficulty of typing on one of those machines. Holding shift while pressing any other key was really a struggle. That's why the **shift lock** key was useful. I remember, being a very bored kid, investigating all those mechanisms and how that magical button would lock the shift key, which would itself move the carriage down, so the big caps on the typebar would hit the tape and the paper. You could feel the whole table move when you pressed shift again to release it quickly. Since the very next day we ditched the heavy machinery, the **caps lock** key was deprecated.
 
 ![my fiancé playing with her old typewriter just so I could take a photo for this post](images/Pastedimage20260313144708.png)
 
-If I EVER need to type all caps like that, I always hold shift all the way and I imagine you do that too. For that reason, I've been either ignoring that key or remapping it to something else. For quite a long time I remapped it to **Ctrl**, but I honestly never used it very much. It was until a few years ago, when I started using Neovim as my main code editor, that remapping it to **Esc** was the greatest change I did in my keyboard since ever. And it didn't stick to only Neovim, I actually don't even have muscle memory to reach the top-left original **Esc** key anymore, even in games.
+If I EVER need to type all caps like that, I always hold shift all the way and I imagine you do that too. For that reason, I've been either ignoring that key or remapping it to something else. For quite a long time I remapped it to **Ctrl**, but I honestly never used it very much. It wasn't until a few years ago, when I started using Neovim as my main code editor, that remapping it to **Esc** was the greatest change I made to my keyboard ever. And it didn't stick to only Neovim, I actually don't even have muscle memory to reach the top-left original **Esc** key anymore, even in games.
 
-The problem is that remapping keys is a surprisingly difficult problem if you consider different systems and different keyboards. I have three computers, and a Steam Deck, that I use on my day-to-day. Two laptops and one desktop. Every laptop has an external keyboard, but also the embedded one, that's a total of 5 keyboards that type on regularly. That's not all, I do have two other laptops that I use sparingly. I also run different distros of Linux and Windows on these computers.
+The problem is that remapping keys is a surprisingly difficult problem if you consider different systems and different keyboards. I have three computers, and a Steam Deck, that I use on my day-to-day. Two laptops and one desktop. Every laptop has an external keyboard, but also the embedded one, that's a total of 5 keyboards that I type on regularly. That's not all, I do have two other laptops that I use sparingly. I also run different distros of Linux and Windows on these computers.
 
 For the longest time, I think I've been remapping the keys with the system's configuration tools. Powertoys on Windows and the GNOME settings. More recently, I think after Wayland adoption, it's not available in the settings anymore, so last few times I had to set that up, I just copy-pasted something I found online. On Windows, Powertoys doesn't work with fullscreen applications. On my wayland-gnome, I had problems even with windowed games.
 
-I've had so much frustration with this issue that I decided to actually stop and research carefully what my options are. This text describes my attempts, findings and how I settled with a firmware solution for some keyboards, and software solutions in Windows and Linux.
+I've had so much frustration with this issue that I decided to actually stop and research carefully what my options are. This post covers my attempts, findings, and how I settled with a firmware solution for some keyboards, and software solutions in Windows and Linux.
+
 ## Custom keyboard firmware
 
-I can hear someone screaming QMK since the very title of this post. And yes, that's part of my solution. QMK is a custom firmware and toolchain for flashing it that run in some of the most common mechanic keyboards out there.
+I can hear someone screaming QMK since the very title of this post. And yes, that's part of my solution. QMK is a custom firmware and toolchain for flashing it that run in some of the most common mechanical keyboards out there.
 
-I said I have three keyboards I use daily, they're all mechanical with fancy modern firmwares, at least I thought. Two of those are **Durgod K320** and one is a **Keychon K2**. They all are technically supported by QMK. My Keychron not officially, but I was happy when I found this [repository](https://github.com/rajumakantham/QMK-on-K2V2) explaining how to flash QMK on it. But turns out only version 2 and 3 support QMK, and I have the first one. So ruled out.
+I said I have three keyboards I use daily, they're all mechanical with fancy modern firmwares, at least I thought. Two of those are **Durgod K320** and one is a **Keychron K2**. They all are technically supported by QMK. My Keychron not officially, but I was happy when I found this [repository](https://github.com/rajumakantham/QMK-on-K2V2) explaining how to flash QMK on it. But it turns out only version 2 and 3 support QMK, and I have the first one. So ruled out.
 ### Flashing QMK on the K320
 
 ![the top one has blue switches and the bottom, brown](images/Pastedimage20260306125008.png)
@@ -64,7 +66,7 @@ I shorted `boot0` to `vdd`, or `C27` and `R21`:
 
 ![If it's not clear, that's really really tiny and way more difficult to do that it seems](images/Pastedimage20260302233401.png)
 
-And connected the USB cable at the same time, so the keyboard enters boot mode, in DFU. One way to test it is checking the LEDs close to the contacts should not turn it on and something should pop up in DFU:
+And connected the USB cable at the same time, so the keyboard enters boot mode, in DFU. One way to test it: the LEDs near the contacts should not light up, and the device should show up in DFU:
 
 ```shell
 dfu-util -l
@@ -97,6 +99,7 @@ qmk flash -kb durgod/k320 -km default
 ```
 
 And it worked! I mean, the keyboard was on and it was working as expected.
+
 #### Some more customization
 
 Since I had it already opened, I decided to try something else. In many of the videos I saw, people were casting some silicone on the bottom shell to try and dampen the sound of the keyboard a bit. Since that keyboard of mine has the clicky blue switches, that I might not be that excited about anymore, I decided to try it with the tools I have: some paper towel:
@@ -104,11 +107,12 @@ Since I had it already opened, I decided to try something else. In many of the v
 ![not as fancy as silicone or foam, but I like to improvise](images/Pastedimage20260302235106.png)
 
 I might be biased, but I _think_ it did improve the sound a bit. Maybe just a bit.
+
 #### Customizing QMK
 
 Once QMK is installed, it's easier to flash new firmwares. To enter boot mode, I just need to disconnect the USB, press **Esc + Space** and then connect it back again. I tried many times and it didn't work. And I still don't know why, but it doesn't work very reliably, maybe like 1 every 4 or 5 times it actually enters boot mode. Not sure if there's anything wrong with my specific keyboard. Should research later.
 
-Then I went to the [QMK Configurator](https://config.qmk.fm/#/durgod/k320/base/LAYOUT_all) and switched the **Caps-Lock** key for **Esc**. That generates a `json` file with the config, but we need to build another firmware with this config file. So the configurator itself can compile and you just download the `bin` file `durgod_k320_base_durgod_k320_base_layout_noesc.bin`.
+Then I went to the [QMK Configurator](https://config.qmk.fm/#/durgod/k320/base/LAYOUT_all) and switched the **Caps Lock** key for **Esc**. That generates a `json` file with the config, but we need to build another firmware with this config file. So the configurator itself can compile and you just download the `bin` file `durgod_k320_base_durgod_k320_base_layout_noesc.bin`.
 
 Once in bootmode:
 
@@ -116,19 +120,21 @@ Once in bootmode:
 dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D durgod_k320_base_durgod_k320_base_layout_noesc.bin
 ```
 
-And it works as expected! Hardware level **Caps-Lock** extermination!
+And it works as expected! Hardware level **Caps Lock** extermination!
 
 But I found the process a bit too complicated. Of course I'm not gonna be changing the scheme all the time, but it's not that friendly to build a new firmware, get the keyboard into _bootmode_ and flash it.
+
 ### VIA
 
 Via is another solution with QMK that makes applying changes to the keyboard SO MUCH easier. You configure everything directly from a [webpage](https://www.usevia.app/) and it flashes instantly to the keyboard:
 
 ![I love the fact that I can just open their website and change anything about my keyboard](images/Pastedimage20260306124042.png)
 
-All I had to do was download the VIA firmware for my keyboard on their website and flash it. So much that I actually went much further and implemented a whole new layer of keys that I can reach while _holding_ **Caps-Lock**. So now I overloaded it two have two functions in one: it's **Esc** when tapped, reach `layer1` when held.
+All I had to do was download the VIA firmware for my keyboard on their website and flash it. So much that I actually went much further and implemented a whole new layer of keys that I can reach while _holding_ **Caps Lock**. So now I overloaded it to have two functions in one: it's **Esc** when tapped, reach `layer1` when held.
+
 ### Flashed Keyboards
 
-I did the process for both of my K320 and that solved part of my problem. Two of my keyboards now can be customized, but there's still all the laptop keyboards and the ones that just don't support QMK. And although I'm always interested in getting a new keyboard, but honestly two-hundred-euros is not something I'd like to spend if it's not a really good plasticky point-n-shoot camera from the 90s, amiright?
+I did the process for both of my K320 and that solved part of my problem. Two of my keyboards now can be customized, but there's still all the laptop keyboards and the ones that just don't support QMK. And although I'm always interested in getting a new keyboard, two-hundred-euros is not something I'd like to spend if it's not a really good plasticky point-n-shoot camera from the 90s, amiright?
 
 ## Software Solution
 
@@ -136,7 +142,7 @@ I always used the stock OS keyboard remap tool. On Linux it was whatever graphic
 
 After some research, I found out about [keyd](https://github.com/rvaiya/keyd). It's a daemon-based solution that is heavily inspired by QMK and supports most of the same features. I don't really understand on which level the keyboard interception happens, but I'm interested in exploring that at some point later.
 
-I appreciate the simplicity of `keyd`'s configurations. To setup the basic Caps-Lock=Esc, all I needed to do in my most recent Arch setup, from installing to have it working was:
+I appreciate the simplicity of `keyd`'s configurations. To setup the basic Caps Lock=Esc, all I needed to do in my most recent Arch setup, from installing to having it working, was:
 
 ```shell
 sudo pacman -S keyd
@@ -158,7 +164,7 @@ And enabling the service:
 sudo systemctl enable --now keyd
 ```
 
-Boom. It works beautifully. By far the easiest possible solution to the **Caps-Lock** problem.
+Boom. It works beautifully. By far the easiest possible solution to the **Caps Lock** problem.
 
 Since `keyd` also supports lots of other features similar to QMK/VIA such as layers, I replicated my whole VIA config in it and the whole config is:
 
@@ -179,13 +185,15 @@ w = macro(leftcontrol+right)
 u = macro(leftcontrol+z)
 ```
 
-Explaining: I have my caps-lock key that acts as ESC when tapped, and change the layer when held. The other layer will have the `hjkl` vim-movement keys acts as the arrows, allowing me to use them anywhere on my system, the same with `bw` for back and forward one word and `u` to undo stuff.
+Explaining: I have my caps-lock key that acts as ESC when tapped, and change the layer when held. The other layer will have the `hjkl` vim-movement keys act as the arrows, allowing me to use them anywhere on my system, the same with `bw` for back and forward one word and `u` to undo stuff.
+
+This is especially good because I can now enjoy even more typing on my Thinkpad laptops, internationally known to have the best laptop keyboards.
 
 ### Windows
 
 I also need to replicate the software remapping to Windows. I've been using **PowerToys**, and I genuinely think it's a good general collection of tools, but the keyboard remap is not really quite there. First it only supports mapping one key to another (no fancy layers, macros, etc), second it doesn't really work all the time, like in fullscreen programs.
 
-I found out that intercepting keys gets way more complicated on Windows. `keyd` itself suggests [kmonad](https://github.com/kmonad/kmonad) for more advanced customization, and it supports the Microsoft system. The configuration, though, is a bit more complex. Getting my Caps-Lock/layer config in it looks like this:
+I found out that intercepting keys gets way more complicated on Windows. `keyd` itself suggests [kmonad](https://github.com/kmonad/kmonad) for more advanced customization, and it supports the Microsoft system. The configuration, though, is a bit more complex. Getting my Caps Lock/layer config in it looks like this:
 
 ```lisp
 (defcfg
@@ -226,7 +234,7 @@ I found out that intercepting keys gets way more complicated on Windows. `keyd` 
 
 Although I appreciate Lisp, I'll go with the INI style config any day.
 
-`kmonad` is a cli tool, not the first-class-citizen on _winland_. The program accepts the config file as a parameter, so you need to run as:
+`kmonad` is a cli tool, not a first-class citizen on _winland_. The program accepts the config file as a parameter, so you need to run as:
 
 ```bat
 kmonad.exe .\config.kbd
@@ -234,7 +242,7 @@ kmonad.exe .\config.kbd
 
 ... and you have to keep the empty terminal window open during all the execution of the program!
 
-You'd think that having a program like that run as a service would be a better idea, but turns out windows services run in a different space than user space, for safety, of course. So it doesn't have any access to keyboards. So what's the alternative?
+You'd think that having a program like this run as a background service would be a no-brainer, but it turns out Windows isolates its services for security reasons. While it's _technically_ possible for a service to intercept keystrokes, it's just as simple as a Linux deamon. So what's the alternative?
 
 #### Kanata
 
@@ -284,9 +292,12 @@ Unfortunately, this solution is not as good as having a daemon running in the ba
 C:\Users\crocidb\Kanata\kanata_windows_gui_winIOv2_x64.exe -c C:\Users\crocidb\dotfiles\keyboards\kanata_windows.kbd
 ```
 
-It does take longer to start on logon than I would like, but it works and is invisible. I set that up in my windows laptop and even the embedded keyboard now is remapped to my scheme. All my keyboard configs are available in my [dotfiles](https://github.com/crocidb/dotfiles/tree/master/keyboards).
+It does take longer to start on logon than I would like, but it works and is invisible. I set that up in my windows laptop and even the embedded keyboard now is remapped to my scheme. 
+
 ## Conclusion
 
-This started as a quest to eliminate **Caps-Lock** and eventually turned into a rabbit hole of customizing the whole keyboard experience. I got to learn many things about systems, drivers, firmwares and keyboards in general. So much that I actually want to keep researching this field. I already have so many notes and loose endings leading me to actually try to understand how `keyd` works and try to setup some tests on my own.
+I can now have the same scheme on all my keyboards in all the computers I use. Even the Steam Deck and my less-used laptops are configured with these, so switching from one to another is completely seamless. I added all the keyboard configs to my [dotfiles](https://github.com/crocidb/dotfiles/tree/master/keyboards), so whenever I change one thing somewhere, all I need to do is `git pull` and get the latest version. It's still a bummer I have three different config systems (VIA, keyd and kanata), but such is life.
 
-At the moment, I'm actually looking to replace my **Keychron** keyboard that doesn't support qmk for a brand new one that already has it flashed. And I think I'm falling out of love with the clicky blue switches. Let me know if you have any recommendation on it.
+This started as a quest to eliminate **Caps Lock** and eventually turned into a rabbit hole of customizing the whole keyboard experience. I got to learn many things about systems, drivers, firmwares and keyboards in general. So much that I want to keep researching this field. I already have so many notes and loose ends leading me to actually try to understand how `keyd` works and setup some tests on my own. But that's for another post.
+
+At the moment, I'm looking to replace my **Keychron** keyboard that doesn't support qmk for a brand new one that already has it flashed. And I think I'm falling out of love with the clicky blue switches. Let me know if you have any recommendations.

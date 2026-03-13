@@ -30,6 +30,7 @@ I've had so much frustration with this issue that I decided to actually stop and
 I can hear someone screaming QMK since the very title of this post. And yes, that's part of my solution. QMK is a custom firmware and toolchain for flashing it that run in some of the most common mechanical keyboards out there.
 
 I said I have three keyboards I use daily, they're all mechanical with fancy modern firmwares, at least I thought. Two of those are **Durgod K320** and one is a **Keychron K2**. They all are technically supported by QMK. My Keychron not officially, but I was happy when I found this [repository](https://github.com/rajumakantham/QMK-on-K2V2) explaining how to flash QMK on it. But it turns out only version 2 and 3 support QMK, and I have the first one. So ruled out.
+
 ### Flashing QMK on the K320
 
 ![the top one has blue switches and the bottom, brown](images/Pastedimage20260306125008.png)
@@ -38,7 +39,7 @@ The K320, though, is officially supported, but in order to flash the QMK firmwar
 
 So I started by installing the necessary QMK tools:
 
-```
+```shell
 # installing QMK
 curl -fsSL https://install.qmk.fm | sh
 
@@ -50,6 +51,7 @@ qmk compile -kb durgod/k320 -km default
 ```
 
 That generated `durgod_k320_base_default.bin` in the `qmk_firmware` folder. That was checked out in `$HOME` by the qmk installer.
+
 #### Opening up the Keyboard
 
 One thing that the [article explaining how to flash it](https://github.com/qmk/qmk_firmware/blob/master/keyboards/durgod/k3x0/readme.md) is very clear about is that, although there are **Durgod K320** keyboards with different microcontrollers, it will only work in the one with an **STM32**. Which means that I have to open the keyboard and check it and there's a risk of no success.
@@ -112,7 +114,7 @@ I might be biased, but I _think_ it did improve the sound a bit. Maybe just a bi
 
 Once QMK is installed, it's easier to flash new firmwares. To enter boot mode, I just need to disconnect the USB, press **Esc + Space** and then connect it back again. I tried many times and it didn't work. And I still don't know why, but it doesn't work very reliably, maybe like 1 every 4 or 5 times it actually enters boot mode. Not sure if there's anything wrong with my specific keyboard. Should research later.
 
-Then I went to the [QMK Configurator](https://config.qmk.fm/#/durgod/k320/base/LAYOUT_all) and switched the **Caps Lock** key for **Esc**. That generates a `json` file with the config, but we need to build another firmware with this config file. So the configurator itself can compile and you just download the `bin` file `durgod_k320_base_durgod_k320_base_layout_noesc.bin`.
+Then I went to the [QMK Configurator](https://config.qmk.fm/#/durgod/k320/base/LAYOUT_all) and switched the **Caps Lock** key for **Esc**. That generates a `json` file with the config, but we need to build another firmware with this config file. So the configurator itself can compile and you just download the `bin` file.
 
 Once in bootmode:
 
@@ -252,7 +254,7 @@ Someone online recommended using [kanata](https://github.com/jtroo/kanata), whic
 
 The config is slightly different, though:
 
-```list
+```lisp
 (defcfg
   process-unmapped-keys yes
 )

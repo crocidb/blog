@@ -29,6 +29,8 @@ Go to [/about](/about) for more info, [/now](/now) for what I'm currently up to,
   keywords = "programming, gamedev, hacking, coding, photography, thoughts"
   
   umami_website_id = "675a5b6c-b514-43a8-b0fc-cee8b6a1fd19"
-  twitter_username = "CrociDB"
+  bluesky_url = "https://bsky.app/profile/crocidb.bsky.social"
+  mastodon_url = "https://mastodon.gamedev.place/@crocidb"
+  github_url = "https://github.com/crocidb"
   paginate = 10
   

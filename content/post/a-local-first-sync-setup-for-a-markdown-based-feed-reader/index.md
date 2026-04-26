@@ -6,6 +6,7 @@ thumb: "images/Pastedimage20260425154817.png"
 tags:
  - devops
  - self-hosted
+ - bulletty
 ---
 
 I've been using Obsidian extensively lately, with several different vaults and they're all git repositories. That means I can sync them on any computer I use, and by having revisions I can go back to the previous state of any note or draft, keeping the whole history of it. I can even sync it with my phone and edit notes on the go at any moment without having to pay an external sync service. That's where I drew inspiration for my feed reader, **bulletty**. After the days of **Google Reader** and the recent concerns about privacy and the rise of self-hosting solutions, it was just natural that I needed a local solution for following the sites and blogs that I like.

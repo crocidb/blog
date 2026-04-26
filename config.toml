@@ -28,7 +28,7 @@ Go to [/about](/about) for more info, [/now](/now) for what I'm currently up to,
   news = "Getting ready for OpenHardwareSummit 2026 in Berlin!"
   keywords = "programming, gamedev, hacking, coding, photography, thoughts"
   
-  google_analytics_id = "G-E3L73E2DVK"
+  umami_website_id = "675a5b6c-b514-43a8-b0fc-cee8b6a1fd19"
   twitter_username = "CrociDB"
   paginate = 10
   

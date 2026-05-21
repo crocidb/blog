@@ -9,7 +9,7 @@ tags:
  - freebsd
 ---
 
-This blog has been running on a Digital Ocean VPS for over ten years. A machine hosted in New York City, running Ubuntu 16.04 LTS. An LTS that hasn't been in support for at least 5 years. I've also been looking to move stuff out of the US, so it was about time to change it. After some considerations, I migrated to a Hetzner virtual machine that is way better than my old Ubuntu one, less than half the price of what I used to pay, and just across the country from me. Not only that, but I took the challenge to move my stack to FreeBSD. It's a long text, but stay for a cool introduction of FreeBSD Jails with Bastille and some interesting site load benchmarks.
+This blog has been running on a Digital Ocean VPS for over ten years. A machine hosted in New York City, running **Ubuntu 16.04 LTS**. An LTS that hasn't been in support for at least 5 years. It was about time to change it. After some considerations, I migrated to a Hetzner virtual machine that is way better than my old Ubuntu one, less than half the price of what I used to pay, and just across the country from me. Not only that, but I took the challenge to move my stack to **FreeBSD**. It's a long text, but stay for a cool introduction of _FreeBSD Jails_ with _Bastille_ and some interesting site load benchmarks.
 
 # Motivation
 
@@ -377,11 +377,12 @@ sysctl kern.ipc.somaxconn=16384
 
 After roughly 10 minutes running, my logs were ready and I went ahead and looked:
 
-![Pastedimage20260507180107.png](images/Pastedimage20260507180107.png)
+![Comparison of the output of `hey` for both of the servers in the São Paulo VPS](images/Pastedimage20260507180107.png)
 
 Left side is the old server and right one is the new one. The difference is mindblowing.
 
 While both servers returned a substantial amount of errors, the FreeBSD managed to respond to the expected `1M` requests, while the Ubuntu one couldn't return `20k`! That's a **MASSIVE** difference.
+
 ### Benchmark Analysis
 
 ![crocidb.com was running on the old server, while crocidb.cro.to was on the new one](images/02_success_rate.png)
@@ -390,28 +391,31 @@ The fact that the old server could only finish a few of the requests is mindblow
 
 Considering the amount of requests per second, the new server is at least 3x better and at most 11x!
 
-![01_rps_comparison.png](images/01_rps_comparison.png)
+![Requests per second: the higher the better](images/01_rps_comparison.png)
 
 Here the variation looks even more dramatic, and my guess is that the latency was much bigger in Tokyo?
 
-![04_latency_percentiles.png](images/04_latency_percentiles.png)
+![Latency Percentiles: `p90` is especially interesting because it measure that **90%** of the users will experience less latency than that value](images/04_latency_percentiles.png)
 
-Looking at the latency percentiles (e.g., `p50` means 50% of requests were answered faster than that value), we see an interestingly different shape for each server. The new one has a more _linear_ growth until around 90%, which makes it more predictable, while the old server grows more unpredictably.
+Looking at the latency percentiles (e.g.: `p50` means 50% of requests were answered faster than that value), we see an interestingly different shape for each server. The new one has a more _linear_ growth until around 90%, which makes it more predictable, while the old server grows more unpredictably.
 
 That shows me that 90% of people trying to load the main page of my blog will get the content in less than **3.5** seconds, from pretty much anywhere in the world, even under high demand. That's pretty good.
 
 I didn't go far enough to understand the issue with Tokyo, but I'm not that worried at the moment. Using the request phase breakdown, where `hey` analyzes the duration of each step of the request, there's an indication that the traffic to Japan is slower:
 
-![08_phase_breakdown1.png](images/08_phase_breakdown1.png)
+![The breakdown of the time it took on each phase of the request](images/08_phase_breakdown1.png)
 
 But this data looked way off to me. First because the DNS dial-up and lookup are incredibly low on the second domain. Maybe because it's a CNAME record? And second because `resp wait` (pretty much time to first byte) and `resp read` (transfer time) were weirdly high here. But that could be explained by the fact that it's only counting successful requests, which can indicate that the first server was quick at first until it basically shut down any new requests.
 
----
+#### Conclusion
 
 I don't think this difference has to do specifically with the stack I picked. It's probably because of misconfiguration on the old Ubuntu system and the fact that the Hetzner VPS I picked has 4 cpu cores, vs one in the DigitalOcean one: much more requests can be processed concurrently. I also don't think that means a lot either, since it's very unlikely these servers would ever need to serve that many requests at the same time. Maybe just one web benchmark like WebPageTest would've been enough.
-# Conclusions
 
-Although the benchmark left many unanswered questions, I'm really happy that, in the end, after many hours experimenting, tinkering, building, and breaking stuff, I figured that it isn't that complicated to set up a FreeBSD site hosting machine. There are several web hosting services satisfying my constraints that [I could've used](https://openbsd.amsterdam/) instead. Or I could've gotten a ready container orchestration service. But I like the path I took, because I learned a lot through it.
+# Biting the Bullet
+
+Although the benchmark left many unanswered questions, I was really happy with it. So I went ahead and updated the DNS records. This is now officially running on that machine.
+
+In the end, after many hours experimenting, tinkering, building, and breaking stuff, I figured that it isn't that complicated to set up a FreeBSD site hosting machine. There are several web hosting services satisfying my constraints that [I could've used](https://openbsd.amsterdam/) instead. Or I could have installed [Proxmox](https://www.proxmox.com/en/) to deal with my containers and admin my system with a visual dashboard. Or even [Sylve](https://sylve.io/), the FreeBSD counterpart. But I like the path I took, because I learned a lot throughout it.
 
 Some of the main takeaways:
 
@@ -420,4 +424,4 @@ Some of the main takeaways:
 - Configuring a machine to host your own blog can require a lot of knowledge of networking that goes way beyond what a gamedev knows.
 - I had so much fun learning another system. Maybe next time I'll do OpenBSD or NetBSD.
 
-In the end, this is all useless, since most of my traffic comes from AI systems crawling it.
+In the end, this is all useless, since most of my traffic comes from AI systems crawling it anyway...

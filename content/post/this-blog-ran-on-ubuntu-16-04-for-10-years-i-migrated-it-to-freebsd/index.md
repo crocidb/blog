@@ -1,12 +1,13 @@
 ---
 title: "This blog ran on Ubuntu 16.04 for 10 years. I migrated it to FreeBSD"
 description: "After a decade on Ubuntu 16.04, I migrated my blog to FreeBSD on Hetzner. Some notes on setting up a VPS with FreeBSD, Jails, Bastille, Caddy reverse proxies, and load testing and benchmarking the blog from four continents."
-date: 2026-05-20
-draft: true
+date: 2026-05-21
+thumb: images/02_success_rate.png
 tags:
  - sysadmin
  - devops
  - freebsd
+ - linux
 ---
 
 This blog has been running on a Digital Ocean VPS for over ten years. A machine hosted in New York City, running **Ubuntu 16.04 LTS**. An LTS that hasn't been in support for at least 5 years. It was about time to change it. After some considerations, I migrated to a Hetzner virtual machine that is way better than my old Ubuntu one, less than half the price of what I used to pay, and just across the country from me. Not only that, but I took the challenge to move my stack to **FreeBSD**. It's a long text, but stay for a cool introduction of _FreeBSD Jails_ with _Bastille_ and some interesting site load benchmarks.
@@ -90,8 +91,6 @@ There are also other Jail managers, I just went with the one with the coolest na
 ## The Stack
 
 The whole idea is having a Jail running **Caddy** to serve all the sites and deal with domains and their SSL certificates. Then each site will have its own jail with whatever is necessary for them to build and serve. The sever jail will reverse proxy all the traffic to the respective jails. So the first thing needed is to configure an internal virtual network adapter. We can think of this stack as something similar to a bunch of virtual machines in a network.
-
-HAND-DRAWN-DIAGRAM
 
 To set up a virtual network interface:
 

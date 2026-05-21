@@ -73,7 +73,7 @@ But I saw a guide explaining how to install it on Hetzner from the [official Fre
 
 The thing is that Hetzner actually provide the FreeBSD image, but it's just hidden, a couple of steps away. It offers as an ISO image. So, when prompted to select an OS image in the creation process, you just need to pick any, then you'll eventually wipe it all out. After creating the VM, all you need is to go to the **ISO Images** tab in the Console and mount the image you want:
 
-![Pastedimage20260507123854.png](images/Pastedimage20260507123854.png)
+![FreeBSD ISO Images available](images/Pastedimage20260507123854.png)
 
 I picked **14.3**. And rebooted. Then I basically followed the installer. Don't remember if I changed anything from the standard options, but I was following the install video from the official FreeBSD channel. Boom, in no time, I had the system installed and running.
 ### Bastille
@@ -199,7 +199,7 @@ Back during the Pandemic, the Brazilian President decided to act as if Covid-19 
 
 So I created a small page `es.cro.to`, which literally means "scrotum" in Portuguese, but is often used to describe someone who is a _scumbag_, an _asshole_, or something like that. I got the domain `cro.to` (which in retrospect, is really cool and sounds rather nice in English) and added a subdomain `es`. It's divided in the exact syllables of the word, just like you find in dictionaries, so I added both the definitions of the word and a picture of the creature:
 
-![Pastedimage20260507155242.png](images/Pastedimage20260507155242.png)
+![escroto](images/Pastedimage20260507155242.png)
 
 It was, of course, being hosted by my old server, and got quite big traffic during that time of lockdown. I decided to start with it, after all it's just one page with a terribly compressed photo, and it's not really that relevant at the moment anymore.
 

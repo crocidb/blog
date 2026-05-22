@@ -30,7 +30,7 @@ A page to show off some of the things I've made and worked on professionally and
 
 ## Gamejam Games
 
- - [Remote Tactical Wars](htpphttps://crocidb.itch.io/remote-tactical-wars): a puzzle game made for Ludum Dare 59 (2026) using Javascript and ThreeJS.
+ - [Remote Tactical Wars](https://crocidb.itch.io/remote-tactical-wars): a puzzle game made for Ludum Dare 59 (2026) using Javascript and ThreeJS.
  - [Fish Recue](https://crocidb.itch.io/fish-rescue): a short relaxing game made in 48 hours for Ludum Dare 56 (2024); made in vanilla Javascript
  - [Clone Stacking](https://crocidb.itch.io/clone-stacking): a puzzle game for Ludum Dare 55 (2024); made in TIC-80 with Fennel (LISP that runs in Lua)
  - [SpaceLord X](https://crocidb.itch.io/spacelord-x): a game made for the Ludum Dare 51 (2022); inspired by the Atari classic SpaceMaster X-7

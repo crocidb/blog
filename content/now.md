@@ -1,27 +1,28 @@
 ---
 title: "⌛ Now"
-date: 2026-05-21
+date: 2026-06-11
 ---
 
 I don’t know if it’s ADHD or another neurodivergent condition, but I have a lot of different interests and I’m constantly starting new projects and lines of research. Since I rarely finish a project, I keep coming back to them from time to time. So here I try to summarize my latest activities. This means that if a certain project disappears from this list, it’s not because I’ve finished or abandoned it, I’ve just been focusing on other things for the moment.
 
 ### Tech and Development
 
- - Working on a full version of **Spacebar Clicker**
- - Working on [bulletty](https://github.com/CrociDB/bulletty), a TUI RSS/ATOM feed reader app for the terminal, in Rust
- - Getting ready for [OSHWA 2026](https://2026.oshwa.org/) in **Berlin** this weekend!
+ - Working on [bulletty](https://github.com/CrociDB/bulletty), a TUI RSS/ATOM feed reader app for the terminal
+ - Researching memory management in FreeBSD
  <!-- - Working on [clutterlog](https://github.com/crocidb/clutterlog), an SSG to make beautiful project WIP galleries, [example](https://crocidb.github.io/crocidb-clutterlog/); also my first experience _vibe-coding_ something. I'll write about it -->
  <!-- - Studying audio plugins and implementing a prototype for an old idea -->
  <!-- - Building some guitar effects for my custom build of GuitarML's [FunBox](https://github.com/GuitarML/FunBox) -->
 
-<!--### Art
+<!--### Art -->
 
 
-<!-- ### Music -->
+### Music
+
+ - Experimenting with music production and free plugins on Linux 
 <!---->
 <!-- Finishing a music project. It's an instrumental psychedelic rock with some influences from brazilian music. I composed, recorded all instruments, produced and mixed everything. It's been a really interesting journey. I'll blog about it when I'm done. -->
 <!---->
 
 ---
 
-Last edit: **2026-05-21**
+Last edit: **2026-06-11**

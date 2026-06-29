@@ -61,6 +61,7 @@ A page to show off some of the things I've made and worked on professionally and
 
 ## Music
 
+ - [stuffy knows](https://crocidb.bandcamp.com/album/stuffy-knows): an alternative/psychedelic instrumental rock album that I composed, arranged, recorded, performed, produced and mixed 
  - [Clone Stacking Soundtrack](https://soundcloud.com/bruno-croci/clone-stacking): the soundtrack of my game made for Ludum Dare 55, Clone Stacking
  - [Brazil](https://soundcloud.com/bruno-croci/brazil): a lo-fi tune
 

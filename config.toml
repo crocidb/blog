@@ -11,6 +11,11 @@ canonifyurls = true
 
 [markup]
   [markup.goldmark]
+      [markup.goldmark.parser]
+            wrapStandAloneImageWithinParagraph = false
+            [markup.goldmark.parser.attribute]
+                  block = true
+                  title = true
       [markup.goldmark.renderer]
             unsafe = true
 
@@ -25,7 +30,7 @@ canonifyurls = true
   homeIntro = """Hi. I'm **Bruno Croci**, also known online as **crocidb**, programmer and hobbyist artist based in Düsseldorf, Germany. I'm a tinkerer who loves to create stuff. My main interests are *video games*, *music*, *photography* and *programming* in general. 
 
 Go to [/about](/about) for more info, [/now](/now) for what I'm currently up to, or check [Things I've Made](/things-ive-made) for a list of projects."""
-  news = "If AI can code anything, the power is not in the hands of the programmer anymore, but in the hands of who can pay for tokens."
+  news = "[I finally finished my first music project, **stuffy knows**. It's available at bandcamp. Give it a listen! 🎵](https://crocidb.bandcamp.com/album/stuffy-knows)"
   keywords = "programming, gamedev, hacking, coding, photography, thoughts"
   
   umami_website_id = "675a5b6c-b514-43a8-b0fc-cee8b6a1fd19"

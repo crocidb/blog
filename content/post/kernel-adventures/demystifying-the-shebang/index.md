@@ -7,7 +7,7 @@ tags:
  - linux
  - investigation
  - c
- - os
+ - operating-systems
 ---
 
 From my first experience creating a shell script, I learned about the [**shebang**](https://en.wikipedia.org/wiki/Shebang_(Unix)) (`#!`), the special first line used to specify the interpreter for executing the script:

@@ -32,7 +32,7 @@ Every OS has a different set of pages and rules for how to manage them. On FreeB
 #define	PQ_COUNT	4
 ```
 
-You can find that at [sys/vm/vm_page.h](https://github.com/freebsd/freebsd-src/blob/main/sys/vm/vm_page.h#L322C1-L327C19). All other unix-based systems will have something similar: [Linux](https://github.com/torvalds/linux/blob/master/include/linux/mmzone.h#L387), [OpenBSD](https://github.com/openbsd/src/blob/master/sys/uvm/uvm_page.h#L140), [NetBSD](https://github.com/NetBSD/src/blob/trunk/sys/uvm/uvm_page.h#L245), [DragonFlyBSD](https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/vm/vm_page.h#L242).
+You can find that at [sys/vm/vm_page.h](https://github.com/freebsd/freebsd-src/blob/584ecfeb9cde1e4cf0ed27c4f822b316b67d320e/sys/vm/vm_page.h#L322C1-L327C19). All other unix-based systems will have something similar: [Linux](https://github.com/torvalds/linux/blob/a635d6748234582ea287c5ffeae28b9b23f91c7e/include/linux/mmzone.h#L387), [OpenBSD](https://github.com/openbsd/src/blob/45825553ccd47dd7b399fe6c0152eefbaf0b0632/sys/uvm/uvm_page.h#L140), [NetBSD](https://github.com/NetBSD/src/blob/6d3e2e843d5ac929411fe9f4621ae7aa2559c85c/sys/uvm/uvm_page.h#L245), [DragonFlyBSD](https://github.com/DragonFlyBSD/DragonFlyBSD/blob/956f1aa6bf782d2aa0c64161632a469b4f980a19/sys/vm/vm_page.h#L242).
 
 If we check `top`, we see that it doesn't just report memory usage, but divides it into a few categories:
 
@@ -116,13 +116,13 @@ used memory = wired + active + laundry
 
 Then I wrote a python script that would show me all the heuristics at once. You can find [it here](https://github.com/crocidb/freebsd-memory-monitor-heuristics).
 
-![Pastedimage20260701215700.png](images/Pastedimage20260701215700.png)
+![Reporting all heuristics at once](images/Pastedimage20260701215700.png)
 
 It looks correct, except for `btop`, that's way off. But if you're looking close, you also noticed that the `cache` value in the screenshot I shared earlier is also empty. It seriously took me weeks to realize that. So I started digging further into their code.
 
 ## `btop` memory reporting is pretty wrong on FreeBSD
 
-On their source-code, looking specifically on [src/freebsd/btop_collect.cpp](https://github.com/aristocratos/btop/blob/main/src/freebsd/btop_collect.cpp), where it fetches the memory information:
+On their source-code, looking specifically on [src/freebsd/btop_collect.cpp](https://github.com/aristocratos/btop/blob/9527231dfbcbe697f8eb80849e267377194e6ca8/src/freebsd/btop_collect.cpp), where it fetches the memory information:
 
 ```cpp
 int mib[4];
@@ -347,7 +347,7 @@ I feel like this made for a much more precise monitoring of a FreeBSD machine's 
 
 The final changes to the FreeBSD code had some improvements to my submission, which is great. I just missed some communication of what's going on. In the end, I'm happy that my contribution had some impact. 
 
-In fact, I'm already looking to contributing again, because these changes made into **DragonFly BSD**, but that flavor of BSD specifically still seems to [include cache pages](https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/sys/vm/vm_page.h#L246), so the previous solution was _likely_ more correct. I'll take some time to dig further into that later.
+In fact, I'm already looking to contributing again, because these changes made into **DragonFly BSD**, but that flavor of BSD specifically still seems to [include cache pages](https://github.com/DragonFlyBSD/DragonFlyBSD/blob/956f1aa6bf782d2aa0c64161632a469b4f980a19/sys/vm/vm_page.h#L246), so the previous solution was _likely_ more correct. I'll take some time to dig further into that later.
 ## Conclusion
 
 It took me a whole month, since my last post, researching FreeBSD virtual memory internals and installing several versions of the system in virtual machines and I think it brought me closer to this system that any other before. I learned a lot about computers and ended up with three patches for substantial projects.
@@ -362,4 +362,10 @@ This is funny though:
 
 ![Unauthorized?](images/Pastedimage20260703001749.png)
 {width="50%"}
+
+## Discussion
+
+ - [Hacker News](https://news.ycombinator.com/item?id=48778757)
+ - [Reddit](https://www.reddit.com/r/freebsd/comments/1umc3yc/freebsd_ate_my_ram/)
+ - [Lobsters](https://lobste.rs/s/qmnpkm/freebsd_ate_my_ram)
 

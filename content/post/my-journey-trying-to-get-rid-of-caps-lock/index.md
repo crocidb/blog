@@ -9,6 +9,9 @@ tags:
     - hardware
     - keyboard
     - linux
+syndication:
+    - https://bsky.app/profile/crocidb.bsky.social/post/3mgxc5fi2hs2c 
+    - https://mastodon.gamedev.place/@crocidb/116222715617345559
 ---
 
 The first time I ever used a typewriter, it was already a vintage device. It was my aunt's old machine, and I suspect it was already pretty much gimmicky by her time too. For a kid who had no computer in the late 90s, it was really cool to sit down and bash my tiny fingers to get some barely visible text on an A4 paper. 

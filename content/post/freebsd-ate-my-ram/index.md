@@ -7,6 +7,9 @@ tags:
  - freebsd
  - operating-systems
  - investigation
+syndication:
+ - https://bsky.app/profile/crocidb.bsky.social/post/3mpqhmzrdsk2k
+ - https://mastodon.gamedev.place/@crocidb/116861320218415578
 ---
 
 Last month I posted about [my journey migrating my site server from an old Ubuntu server to FreeBSD](/post/this-blog-ran-on-ubuntu-16-04-for-10-years-i-migrated-it-to-freebsd/). Some people on Hacker News noticed that, when I showed the `fastfetch` result, I said I was confused with the RAM usage compared to `btop` and commented that `fastfetch` is probably _more_ correct. I decided to enter that rabbit hole and try to understand why reporting free or used memory in a modern operating system is more complicated than it seems.

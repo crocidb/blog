@@ -10,6 +10,8 @@ tags:
  - bulletty
  - projects
  - ai
+syndication:
+ - https://bsky.app/profile/crocidb.bsky.social/post/3ma6zgpfqis2y
 ---
 
 I was finalizing the first working version of [**bulletty**](https://github.com/CrociDB/bulletty) when I realized it was close to [Hacktoberfest](https://hacktoberfest.com/), the event created by DigitalOcean where they give t-shirts for people who contribute to open source software (more specifically, when you complete 6 successful PRs during the month of October). So I thought it could be interesting to have people contribute and help me make the feed reader better, also bringing more visibility to the project.

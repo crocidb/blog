@@ -2,12 +2,15 @@
 title: "Notes On #1: EuroBSDCon, a mysterious inscription, Hiring Agent, and Kokoro Reader"
 description: "The first edition of a newletter kinda thing where I put together notes from stuff I read or did during a certain time span. Especially stuff that I didn't feel like writing a full text. In this edition is EuroBSDCon, a mysterious inscription in a used book, testing my resumé with an LLM hiring agent and how to use Kokoro Reader."
 date: 2026-08-06
-thumb: "images/Pastedimage20260722225602.png"
+thumb: "images/Pastedimage20260721164352.png"
 tags:
  - notes-on
  - bsd
  - ai
  - music
+syndication:
+ - https://mastodon.gamedev.place/@crocidb/117047906722654225
+ - https://bsky.app/profile/crocidb.bsky.social/post/3msfqw7aavc27
 ---
 
 A lot of my time is spent in reading technical blogs and news. Mostly from my RSS feeds and Hacker News, Lobsters, and Reddit. My browser has dozens of open tabs of articles I want to read, but think they're too deep for just a quick scan. A lot of these texts require some further research on the subject or new concepts I've never heard before. So I realized that taking notes of these articles is the best way of understanding it, along with the further links I'll follow, improving my chances of actually learn something.

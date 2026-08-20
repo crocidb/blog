@@ -30,7 +30,7 @@ canonifyurls = true
   homeIntro = """Hi. I'm **Bruno Croci**, also known online as **crocidb**, programmer and hobbyist artist based in Düsseldorf, Germany. I'm a tinkerer who loves to create stuff. My main interests are *video games*, *music*, *photography* and *programming* in general. 
 
 Go to [/about](/about) for more info, [/now](/now) for what I'm currently up to, or check [Things I've Made](/things-ive-made) for a list of projects."""
-  news = "[I finally finished my first music project, **stuffy knows**. It's available at bandcamp. Give it a listen! 🎵](https://bruno.croci.art/stuffy-knows/)"
+  news = "[**bulletty** v0.3.0 is finally released! 🎉 Check it out now!](https://github.com/crocidb/bulletty/releases/tag/v0.3.0)"
   keywords = "programming, gamedev, hacking, coding, photography, thoughts"
   
   umami_website_id = "675a5b6c-b514-43a8-b0fc-cee8b6a1fd19"

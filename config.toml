@@ -1,6 +1,6 @@
 baseURL = 'https://crocidb.com/'
 
-languageCode = 'en-us'
+locale = 'en-us'
 title = "Bruno Croci"
 
 theme = 'pixyll'
@@ -38,4 +38,5 @@ Go to [/about](/about) for more info, [/now](/now) for what I'm currently up to,
   mastodon_url = "https://mastodon.gamedev.place/@crocidb"
   github_url = "https://github.com/crocidb"
   paginate = 10
+  mainSections = ["post"]
   

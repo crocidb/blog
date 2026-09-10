@@ -1,0 +1,26 @@
+{{ "<?xml version=\"1.0\" encoding=\"utf-8\"?>" | safeHTML }}
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ .Title }}</title>
+  <author>
+    <name>{{ .Site.Params.Author }}</name>
+    <uri>{{ .Site.Params.AuthorWebsite }}</uri>
+  </author>
+  <link href="{{ .Permalink }}/index.xml" />
+  <id>{{ .Permalink }}</id>
+  <updated>{{ now.UTC.Format "2006-01-02T15:04:05Z" }}</updated>
+  <!--<description>{{ .Site.Params.Description | safeHTML }}</description>-->
+  <!--{{ with .Site.Language.Locale }}<language>{{.}}</language>{{end}}-->
+  <!--{{ with .Site.Copyright }}<copyright>{{.}}</copyright>{{end}}-->
+
+  {{ range first 15 .Site.RegularPages }}
+  <entry>
+    <id>{{ .Permalink }}</id>
+    <title>{{ .Title }}</title>
+    <link href="{{ .Permalink }}" />
+    <updated>{{ .Date.Format "2006-01-02T15:04:05Z" }}</updated>
+    <summary type="html">{{ .Content | html }}</summary>
+    <!--<content type="html">{{ .Content | html }}</content>-->
+  </entry>
+  {{ end }}
+</feed>

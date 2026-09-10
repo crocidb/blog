@@ -1,0 +1,17 @@
+<div class="post center-post h-entry">
+  <a class="post-link u-url" href="{{ .Permalink }}">
+  <time class="post-meta dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+  <!-- {{ if isset .Params "author" }}<p class="post-author right">{{ i18n "written" }} {{ .Params.author }}</p>{{ end }} -->
+  <!-- <div class="clearfix"></div> -->
+  <h3 class="h2 post-title-home p-name">{{ .Title }} {{ if .Draft }}(draft){{end}}</h3>
+  <!-- <p class="post-summary">{{ .RawContent | strings.Truncate 200 }}</p> -->
+  </a>
+  {{ $baseurl := .Site.BaseURL }}
+  {{ if isset .Params "tags" }} {{ if len .Params.tags }}
+  <p class="post-meta">
+  {{ range $i, $e := .Params.tags }}
+      {{if $i}}/{{end}}
+      <a class="p-category" rel="tag" href="{{ $baseurl }}{{ $.Site.LanguagePrefix }}/tags/{{ . }}">{{ . }}</a>
+  {{ end }}</p>
+  {{ end }}{{ end }}
+</div>

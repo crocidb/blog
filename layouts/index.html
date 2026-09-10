@@ -1,0 +1,48 @@
+{{ partial "head.html" . }}
+<div class="site-wrap">
+    {{ partial "header.html" . }}
+    {{ if isset .Site.Params "description" }}
+    <meta name="description" content="{{ .Site.Params.description }}">
+    {{ end }}
+    <div class="post p2 p-responsive wrap" role="main">
+        <div class="measure">
+            <div class="home">
+            {{ if isset .Site.Params "paginate" }}
+              {{ $paginator := .Paginate (where .Site.RegularPages "Type" "in" .Site.Params.mainSections) .Site.Params.paginate }}
+              {{ if and .IsHome (eq $paginator.PageNumber 1) }}
+                <h2>👋 whoami</h2>
+                <p>{{ .Site.Params.HomeIntro | markdownify | safeHTML }}</p>
+              {{ end }}
+
+              <h2>🧾 posts</h2>
+
+              <div class="posts h-feed">
+                {{ range $paginator.Pages.ByDate.Reverse }}
+                  {{ .Render "summary" }}
+                {{ end }}
+              </div>
+
+              <div class="paginatin_area">
+                {{ partial "pagination.html" . }}
+              </div>
+            {{ else }}
+              {{ if .IsHome }}
+                <h2>👋 whoami</h2>
+                <p>{{ .Site.Params.HomeIntro | markdownify | safeHTML }}</p>
+              {{ end }}
+
+              <h2>🧾 posts</h2>
+
+              <div class="posts h-feed">
+                {{ range first 10 .Site.RegularPages.ByDate.Reverse }}
+                  {{ if eq .Type "post" }}
+                    {{ .Render "summary" }}
+                  {{ end }}
+                {{ end }}
+              </div>
+            {{ end }}
+            </div>
+        </div>
+    </div>
+</div>
+{{ partial "footer.html" . }}

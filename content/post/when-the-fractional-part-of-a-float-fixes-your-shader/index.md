@@ -1,6 +1,12 @@
 ---
 title: "When the fractional part of a float fixes your shader"
+description: "A write-up of a full shader debugging session to find out why my Voronoi Diagram shader was stuttering in one specific machine."
+thumb: "images/Pastedimage20260907235534.png"
 date: 2026-09-13
+tags:
+ - shaders
+ - investigation
+ - graphics-programming
 ---
 
 The other night I wanted to implement a small Voronoi-diagram shader to use as a background to a music video, to show up the music project I recently finished. Voronoi Noise is type of algorithm I never implemented before, and I was always mesmerized by the geometric and often organic-ish way it looks. Without much direction in mind, I started implementing it and experimenting. I got it looking pretty cool and I was about to call it a day, but then next morning I found out that, in one of my computers only, there was a weird stutter to the animation. So I decided to dig into it to find out what the problem was. This is the write-up of my whole adventure of a week debugging and disassemblying shaders. There are a few plot twists to the story, and hopefully a lot of interesting information too.
@@ -25,13 +31,13 @@ There's a really nice introduction to Voronoi noise in [The Book Of Shaders](htt
 
 ### UV Wrapping
 
-It's a space distortion. Before I divide the space equally, I distort the space using a noise. Applying it to the voronoi diagram, I get this:
+It's a space distortion. Before I divide the space equally, I distort the space using a noise. Applying it to the Voronoi diagram, I get this:
 
 ![distorting the space](images/Pastedimage20260907235111.png)
 
 ### Palette Lookup
 
-I colored the Voronoi cells with basically the inverted distance to the center. So now, finally, I get the most appropriate color from the pallete (considering they're in the order I'd like), and apply a little bit of the shading, since I only have 7 colors in the palette:
+I colored the Voronoi cells with basically the inverted distance to the center. So now, finally, I get the most appropriate color from the palette (considering they're in the order I'd like), and apply a little bit of the shading, since I only have 7 colors in the palette:
 
 ```glsl
 const vec3 palette[7] = vec3[7](
@@ -63,7 +69,7 @@ Next morning, I was working on a different computer than the one I was building 
   <source src="images/broken_shader1.webm" type="video/webm">
 </video>
 
-There's this weird stutter that wasn't visible before. At first I was trying it on Firefox, on Windows, then I opened it on Chrome, then Edge. All the browsers displayed the same issue. So I started stripping out the effects to find where the issue was lying. Removing the UV warping, the palette cycling and making the cells bigger made the issue more clear:
+There's this weird stutter that wasn't visible before. At first I was trying it on Firefox, on Windows, then I opened it on Chrome, then Edge. All the browsers displayed the same issue. So I started stripping out the effects to find where the issue was lying. Removing the UV warping, the palette cycling and making the cells bigger made the issue clearer:
 
 <video controls width="100%">
   <source src="images/broken_shader3.webm" type="video/webm">
@@ -75,7 +81,7 @@ Just as a comparison, that's how it's supposed to look like:
   <source src="images/noise-normal.mp4" type="video/webm">
 </video>
 
-It seemed that the issue was in the part of the code that generated the voronoi centers:
+It seemed that the issue was in the part of the code that generated the Voronoi centers:
 
 ```glsl
 // get distance to all points
@@ -94,7 +100,7 @@ for (int i = -1; i <= 1; i++) {
 }
 ```
 
-More specifically in the lines where where I define `v` and `c`. The rule to procedurally compose the noise call, and the call itself. Somehow, something within that noise call was acting different in this computer that worked on my other computer. So I tested with these different devices:
+More specifically in the lines where I define `v` and `c`. The rule to procedurally compose the noise call, and the call itself. Somehow, something within that noise call was acting different in this computer that worked on my other computer. So I tested with these different devices:
 
 - Two different Linux Laptops with **Integrated Intel GPU**: **Normal**
 - Google Pixel 9 Pro phone: **Normal**
@@ -110,9 +116,9 @@ Just a quick simplified introduction for those who know nothing about shader pro
 
 That's part of what makes Shadertoy so fun to play with. The only two parameter that ever changes in my shader are: 1. the coordinate of the current pixel; 2. the time variable. The former is passed in the form of a 2d vector, in which the components range from `0.0f` to `1.0f`; the latter is a float, and it only changes from frame to frame.
 
-In order to get a _random_ value, I have to rely on _hash functions_, then possibly make a procedural noise to _smooth_ it out. The noise function I use in this shader was taken from this article on [Procedural Noises](https://iquilezles.org/articles/morenoise/), by [Inigo Quilez](https://iquilezles.org/), the creator of Shadertoy and one of the most influential graphics programmer I know. It's slightly different from the article, but I've been using this same code in pretty much every shader I wrote since 2019.
+In order to get a _random_ value, I have to rely on _hash functions_, then possibly make a procedural noise to _smooth_ it out. The noise function I use in this shader was taken from this article on [Procedural Noises](https://iquilezles.org/articles/morenoise/), by [Inigo Quilez](https://iquilezles.org/), the creator of Shadertoy and one of the most influential graphics programmers I know. It's slightly different from the article, but I've been using this same code in pretty much every shader I wrote since 2019.
 
-Here's the full noise code used in this shader. No need to really understand it, but it basilly gets hashes of different values and interpolates them, effectively smoothing out the output. Check Inigo Quilez article if you want to understand better.
+Here's the full noise code used in this shader. No need to really understand it, but it basically gets hashes of different values and interpolates them, effectively smoothing out the output. Check Inigo Quilez article if you want to understand better.
 
 ```glsl
 float hash1(float n) {
@@ -149,36 +155,39 @@ float noisev(in vec3 x) {
           k5 * u.y * u.z + k6 * u.z * u.x + k7 * u.x * u.y * u.z);
 }
 ```
-# First attempt to find the issue
 
-Since my friends couldn't give me directions on to debug this, I fired off an LLM and explained the problem, along with the full code. At first it started analyzing the hash function to find some continuity problem, but I thought it was not a good idea, since this code is used in thousands of Shadertoy shaders. So I steered it away from it. Then it decided that it could be some issue with a call to `fract`, right in the beginning of the noise function. Apparently it found some people online complaining about a problem with it in NVIDIA 40xx drivers.
+# First Attempt to Find the Issue
+
+Since my friends couldn't give me directions on to debug this, I fired off an LLM and explained the problem, along with the full code. At first it started analyzing the hash function to find some continuity problem, but I thought it was not a good idea, since this code is used in thousands of Shadertoy shaders. So I steered it away from it. Then it decided that it could be some issue with a call to `fract`, right in the beginning of the noise function. Apparently it found some people online complaining about a problem with it in Nvidia 40xx drivers.
 
 > `fract` gets the fractional part of a float.
 
 Reading through the _thinking_ section, I noticed that the LLM (Kimi K3) was assuming that the stuttering started after some time of the code running, which can indeed degrade the precision of the float, causing visible stutters. Pretty common thing, but in this case, it was stuttering since the very first second, but I actually decided to try the first suggestion it gave: substitute `fract(x)` by `x - floor(x)`, which is mathematically equivalent.
 
-**And it worked.** It fixed the issue. I didn't see the voronoi vertices snapping anymore. I asked for a explanation, and it gave me this:
+**And it worked.** It fixed the issue. I didn't see the Voronoi vertices snapping anymore. I asked for an explanation, and it gave me this:
 
-> "**Root cause:** NVIDIA driver 595.79 (RTX 4070) miscompiles GLSL `fract()` usage in this shader's context for large-magnitude operands (~100–1000): the returned fractional part is temporally discontinuous (moves smoothly, then jumps). Proof: replacing `fract(x)` with the mathematically identical `x - floor(x)` (already computed as `p` — an exact fp32 subtraction) eliminates the snapping on the affected machine while producing bit-identical output on healthy GPUs. A compiler that computes the same equation differently depending on which instructions it emits is, by definition, a miscompile. **Effect on the shader:** `fract(v)` is the interpolation weight of the value noise; when it lies, the noise output teleports instead of gliding — and the voronoi centers (`c = o + noise2(v)/TILES`) teleport with it."
+> "**Root cause:** Nvidia driver 595.79 (RTX 4070) miscompiles GLSL `fract()` usage in this shader's context for large-magnitude operands (~100–1000): the returned fractional part is temporally discontinuous (moves smoothly, then jumps). Proof: replacing `fract(x)` with the mathematically identical `x - floor(x)` (already computed as `p` — an exact fp32 subtraction) eliminates the snapping on the affected machine while producing bit-identical output on healthy GPUs. A compiler that computes the same equation differently depending on which instructions it emits is, by definition, a miscompile. **Effect on the shader:** `fract(v)` is the interpolation weight of the value noise; when it lies, the noise output teleports instead of gliding — and the Voronoi centers (`c = o + noise2(v)/TILES`) teleport with it."
 
 At this point I could have moved on with my life. Shader was working, I could go back to tweaking it, improving the code, then publish it. But I'm too curious and I wasn't very convinced, so I decided to dig further.
-# Reproducing the issue
 
-The natural next step is finding the minimum possible code that will reproduce the issue. So I asked the LLM, since it already the hypothesis that generated the fix. It failed. I changed the model a couple times, even to proprietary models like Opus, but none of them was able to create a single program that reproduced the issue.
+# Reproducing the Issue
+
+The natural next step is finding the minimum possible code that will reproduce the issue. So I asked the LLM, since it already had the hypothesis that generated the fix. It failed. I changed the model a couple of times, even to proprietary models like Opus, but none of them was able to create a single program that reproduced the issue.
 
 All the test shaders it produced were based on the assumption that `fract` was generating garbage values for some specific range of input values, and they were variations of displaying this delta of the expected value `x - floor(x)` and the problematic one `fract(x)`. The interesting outcome of these tests were that, there were either **no difference** at all on all my devices, or the errors were not only happening on the problematic device.
 
 That invalidate the whole hypothesis of it being an issue with the GPU driver. LLM found a solution, but merely by chance!
-# Forget LLMs, let's do it by hand
 
-I started by moving stuff around and thinking of ways to simplify the loop where I call the noise function, but keeping similar parameters. I tried passing different values to the noise function within and that's when I found out the first mind-blowing twist: **as long as there was at least one fractional float multiplication in the parameter passed to the noise, the shader would just work normally**. For example, this is the line in the original code:
+# Forget LLMs, Let's Do It by Hand
+
+I started by moving stuff around and thinking of ways to simplify the loop where I call the noise function, but keeping similar parameters. I also tried passing different values to the noise and that's when I found out the first twist: **as long as there was at least one fractional float multiplication in the parameter passed to the noise, the shader would just work normally**. For example, this is the line in the original code:
 
 ```c
 vec2 v = o * 398.0 + vec2(iTime * 1.3, iTime * 1.4);
 vec2 c = o + noise2(v) / TILES;
 ```
 
-As long as I changed the scalar multiplicator from `398.0` to `398.1`:
+As long as I changed the scalar multiplier from `398.0` to `398.1`:
 
 ```c
 vec2 v = o * 398.1 + vec2(iTime * 1.3, iTime * 1.4);
@@ -187,52 +196,56 @@ vec2 v = o * 398.1 + vec2(iTime * 1.3, iTime * 1.4);
 The stutter was gone. Even with the fract still in the noise code. That was the most important evidence, but also the weirdest. Even if I multiplied by `1.0`, or removed the multiplication entirely, the stutter was there, but bringing it back, something like `1.001`, fixed it.
 
 Time to disassemble. I want to know what changes in the final machine code from just changing one literal float value.
-# Disassemblying the shader
+
+# Disassemblying the Shader
 
 I don't have a lot of experience debugging shaders, and pretty much no knowledge of GPU architecture. All my graphics knowledge was more focused on the pipeline (from trying to create 3d renderer and game engine some time ago: [annileen](https://github.com/crocidb/annileen)), which happens on the graphics API side of things. But investigating issues like this is something I enjoy, and even without much knowledge of any GPU assembly, I know I can understand a lot of what's going on by just looking at it.
 
-Back when developing annileenb, I've used some of [RenderDoc](https://renderdoc.org/), an open-source graphics debugger software that lets you dig through the whole graphics pipeline for one frame, including getting the compiled version of each shader along with all the data that went in and out of it. But I anticipated that debugging a whole browser just for one WebGL context was a bit overkill, so I invoked an LLM again to generate a shadertoy wrapper for OpenGL that run the same model of GLSL and pass the same uniforms as Shadertoy. A native program that would load `shader.glsl` and display it exactly like shadertoy would.
+Back when developing **annileen**, I've had to use some of [RenderDoc](https://renderdoc.org/), an open-source graphics debugger software that lets you dig through the whole graphics pipeline for one frame, including getting the compiled version of each shader along with all the data that went in and out of it. But I anticipated that debugging a whole browser just for one WebGL context was a bit overkill, so I invoked an LLM again to generate a shadertoy wrapper for OpenGL that run the same model of GLSL and pass the same uniforms as Shadertoy. A native program that would load `shader.glsl` and display it exactly like shadertoy would.
 
 A few tokens burned and the program was running, but... no stutter. I made sure I was using the correct code, but just couldn't reproduce the error. I assumed it was just something related to it being OpenGL and not WebGL (OpenGL ES) and discarded the test. I would have to capture a browser frame.
-## Capturing a browser frame with RenderDoc
 
-I have a terrible habit of having multiple browsers installed with specific setups of tabs in each one of them. So I went ahead and downloaded a fresh and clean version of Chromium. I found somewhere that the correct way to launch a Chomium session for full capture in RenderDoc is using these command line parameters:
+## Capturing a Browser Frame with RenderDoc
 
-`--disable-gpu-sandbox --disable-gpu-watchdog --no-sandbox --ignore-gpu-blocklist --enable-webgl --use-angle=d3d11 --disable-direct-composition`
+I have a terrible habit of having multiple browsers installed with specific setups of tabs in each one of them. So I went ahead and downloaded a fresh and clean version of Chromium. I found somewhere that the correct way to launch a Chromium session for full capture in RenderDoc is using these command line parameters:
 
-And setting it to capture also from child processes, since it creates several difference processes. After launching it and opening another wrapper I created with only the shader viewport, I could capture with **F12** and open those capture, that are hidden in the child processes:
+```sh
+--disable-gpu-sandbox --disable-gpu-watchdog --no-sandbox --ignore-gpu-blocklist --enable-webgl --use-angle=d3d11 --disable-direct-composition
+```
 
-![Pastedimage20260904191713.png](images/Pastedimage20260904191713.png)
+And setting it to capture also from child processes, since it creates several difference processes. After launching it and opening another wrapper I created with only the shader viewport, I could capture frames with **F12** and open those captures, that are hidden in the child processes:
+
+![modern browsers spawn several child process](images/Pastedimage20260904191713.png)
 
 Turns out it was always within the second child process:
 
-![Pastedimage20260904191748.png](images/Pastedimage20260904191748.png)
+![two captures I did with different values](images/Pastedimage20260904191748.png)
 
 I made two captures, one with the original shader, with that value of `398.0` value, and another one with `398.1`.
 
-To find the decompiled shader, all I needed to was to find the correct draw call in the Event Browser:
+To find the decompiled shader, all I needed to was to find the correct draw call in the _Event Browser_:
 
-![Pastedimage20260904195510.png](images/Pastedimage20260904195510.png)
+![the very specific draw call when my shader is drawn](images/Pastedimage20260904195510.png)
 
 Then going to the pipeline state tab, selecting the Pixel Shader:
 
-![Pastedimage20260904195534.png](images/Pastedimage20260904195534.png)
+![_Pixel Shader 31872_](images/Pastedimage20260904195534.png)
 
 Then clicking on the view button in front of the shader program:
 
-![Pastedimage20260904195555.png](images/Pastedimage20260904195555.png)
+![finally the shader disassembly](images/Pastedimage20260904195555.png)
 
 I missed a very important thing at this point: the fact that the shader is in `ps_5_0` format. That's the format for DirectX 11, not at all OpenGL. I'll eventually go back to this.
 
 I just wanted to check the difference between the two shader programs, one where that scalar multiplying the noise input was `1.0` and another one that was `1.1`. And this was **very** surprising, the shader was very different:
 
-![Pastedimage20260904194315.png](images/Pastedimage20260904194315.png)
+![way too many changes after just a literal float value](images/Pastedimage20260904194315.png)
 
 You can see on line `43` here where the value is different. The rest is mostly different registers and instructions, although the final code had the same structure.
 
-Just as a curiosity, I got the disassembly for the program with the `x - floor(x)` trick to substitute the `fract`, still passing a scalar value with no decimal part (`3.0` in this case), and the the version with `fract`, but passing `3.1`. And it blew my mind how the two shader here were basically the same:
+Just as a curiosity, I got the disassembly for the program with the `x - floor(x)` trick to substitute the `fract`, still passing a scalar value with no decimal part (`3.0` in this case), and the version with `fract`, but passing `3.1`. And it blew my mind how the two shader here were basically the same:
 
-![Pastedimage20260904194702.png](images/Pastedimage20260904194702.png)
+![more aligned with my expectation](images/Pastedimage20260904194702.png)
 
 - the actual value, because in the version of the code I don't force the fract, I'm using the regular 3.0 value
 - and an `fcc` instruction that becomes an `add`.
@@ -242,36 +255,38 @@ The fact that changing a single literal value made a huge difference in the outp
 
 [ANGLE](https://chromium.googlesource.com/angle/angle/+/main/README.md) is a project created by Google for Chrome, that will allow WebGL to run under different graphics API, by transpiling the GLSL shaders into the respective shader languages for each API. It's currently used not only by Chrome, but also Firefox, on Windows platforms. And turns out, the only device variable I didn't think of so far was the OS. In all my test devices, that one was the only one running Windows.
 
-The browser was rendering in DirectX 11, so ANGLE was transpiling the GLSL shader into HLSL, then having the DirectX compile the shader. The disassembly found in RenderDoc comes from that byte-code, **DXBC** (DirectX Byte Code). At that moment I remembered that the there was one flag I passed as a command line argumen to Chrome to capture it in RenderDoc: `--use-angle=d3d11`. If I simply changed it to `--use-angle=vulkan`, made the whole browser be rendered in Vulkan, which made ANGLE compile the GLSL to Spirv instead. And guess... **the stutter wasn't reproducible anymore**.
+The browser was rendering in DirectX 11, so ANGLE was transpiling the GLSL shader into HLSL, then having the DirectX compile the shader. The disassembly found in RenderDoc comes from that byte-code, **DXBC** (DirectX Byte Code). At that moment I remembered that the there was one flag I passed as a command line argument to Chrome to capture it in RenderDoc: `--use-angle=d3d11`. If I simply changed it to `--use-angle=vulkan`, made the whole browser be rendered in Vulkan, which made ANGLE compile the GLSL to Spirv instead. And guess... **the stutter wasn't reproducible anymore**.
 
 **New hypothesis**: the one extra layer of ANGLE GLSL->HLSL transpiling was optimizing that `fract` in a weird way based on the value passed to it!
-# Testing the new hypothesis
 
-That's just now that I learned that we actually don't have access to the proper GPU machine code. All we can get is the disassembly/decompilation of the byte-code generated by the graphics API's own shader process. Then the GPU driver, which is proprietary and different for each one of the graphics cards, will compile that intermediate byte-code into their own machine code. So that assembly code I can get on RenderDoc is the farthest I can go. Which means I can't compare the actual disassembly of the actualy final code that's running on the GPU from Vulkan and DirectX.
+# Testing the New Hypothesis
 
-So my next idea was to find a way to intercept the intermediate HLSL code transpiled by ANGLE before it becomes DXBC. The way to do that is actually passing this command line argument to chrome: `--enable-angle-features=dumpTranslatedShaders`. That way, it will dump the code to the path specificed to the environment variable `ANGLE_SHADER_DUMP_PATH`.
+That's just now that I learned that we actually don't have access to the proper GPU machine code. All we can get is the disassembly/decompilation of the byte-code generated by the graphics API's own shader process. Then the GPU driver, which is proprietary and different for each one of the graphics cards, will compile that intermediate byte-code into their own machine code. So that assembly code I can get on RenderDoc is the farthest I can go. Which means I can't compare the disassembly of the actual final code that's running on the GPU from Vulkan and DirectX.
 
-Surprinsigly (or not), the final HLSL was nearly identical to the GLSL. No fancy optimizations or anything. In fact, the two languages are pretty similar. I remembered then when working with **BGFX**, it also had a pipeline to convert GLSL into HLSL for DirectX 11, and the process was very straightforward.
+So my next idea was to find a way to intercept the intermediate HLSL code transpiled by ANGLE before it becomes DXBC. The way to do that is actually passing this command line argument to chrome: `--enable-angle-features=dumpTranslatedShaders`. That way, it will dump the code to the path specified to the environment variable `ANGLE_SHADER_DUMP_PATH`.
 
-One more hypothesis invalidaded. **Next hypothesis**: the issue is in the HLSL shader compiler.
-# Testing the HLSL compiler
+Surprisingly (or not), the final HLSL was nearly identical to the GLSL. No fancy optimizations or anything. In fact, the two languages are pretty similar. I remembered then when working with **BGFX**, it also had a pipeline to convert GLSL into HLSL for DirectX 11, and the process was very straightforward.
 
-To get closer to the actual issue, I needed a proper DirectX 11 shadertoy wrapper. So I asked an LLM to generate one for me, really quick. Then I manually transpiled the original GLSL into HLSL and I was able to reproduce the bug natively, in a Windows DirectX 11 renderer.
+One more hypothesis invalidated. **Next hypothesis**: the issue is in the HLSL shader compiler.
 
-Since my early hypothesis that this was an optimization error, I started checking how DirectX compiles shaders. DirectX 11 uses [FXC](https://learn.microsoft.com/en-us/windows/win32/direct3dtools/fxc) to compile the HLSL into DXBC. And when compiling it, there's a flag to pick the level of optimization. By default, I assume that ANGLE uses `O3`, so that's what I went with. When I skipped the optimization alltogether, I got a working shader. **It is an optimization issue.**
+# Testing the HLSL Compiler
+
+To get closer to the actual issue, I needed a proper DirectX 11 Shadertoy wrapper. So I asked an LLM to generate one for me, really quick. Then I manually transpiled the original GLSL into HLSL and I was able to reproduce the bug natively, in a Windows DirectX 11 renderer.
+
+Since my early hypothesis that this was an optimization error, I started checking how DirectX compiles shaders. DirectX 11 uses [FXC](https://learn.microsoft.com/en-us/windows/win32/direct3dtools/fxc) to compile the HLSL into DXBC. And when compiling it, there's a flag to pick the level of optimization. By default, I assume that ANGLE uses `O3`, so that's what I went with. When I skipped the optimization altogether, I got a working shader. **It is an optimization issue.**
 
 I used [HLSL Decompiler](https://github.com/javelinlinV2/HLSLDecompiler), an extension to **RenderDoc** to try and decompile the DXBC into working HLSL so it would be easier to check what the optimization was doing.
 
 Considering this part of the code:
 
-```c
+```hlsl
 float2 v = o * 398.0 + float2(iTime * 1.1, iTime * 1.1);
 float2 c = o + noise2(v) / TILES;
 ```
 
 and considering that `noise2`:
 
-```c
+```hlsl
 // basically wraps two calls to `noisev`
 float2 noise2(float2 v) {
   return float2(noisev(float3(v, 0.0)), noisev(float3(v, 18.0)));
@@ -286,7 +301,7 @@ float noisev(in float3 x) {
 
 Decompiling it, with no compiler optimizations at all (`D3DCOMPILE_SKIP_OPTIMIZATION`), generated this:
 
-```c
+```hlsl
 r5.zw = float2(398,398) * r5.xy;
 r6.x = 1.10000002 * iTime;
 r6.y = 1.10000002 * iTime;
@@ -302,7 +317,7 @@ We can see the `398` value, initializing a vec2. After multiplying it by `r5.xy`
 
 When we turn back the optimizations on (`O3`), all I see is:
 
-```c
+```hlsl
 r3.xz = r5.yz * float2(398,398) + r1.xx;
 r3.xz = floor(r3.xz);
 r3.x = r3.z * 317 + r3.x;
@@ -312,21 +327,22 @@ r3.z = r3.z * r3.w;
 r3.z = frac(r3.z);
 ```
 
-I see something similar, it's assigning a multiplication of a vec2 to the `398` to `r3.xz`, but in the **following line, it's reassigning `r3.xz` to its own floor**! Effectively truncating that value. So that's where the snapping movement I is generated: **by truncating** a value that shouldn't.
+I see something similar, it's assigning a multiplication of a vec2 to the `398` to `r3.xz`, but in the **following line, it's reassigning `r3.xz` to its own floor**! Effectively truncating that value. So that's where the snapping movement is generated: **by truncating** a value and losing its fractional part entirely.
 
 Just to illustrate, here's that exact part when instead of multiplying the coordinates by `398.0` I do `398.1`, compiled with `O3`:
 
-```c
+```hlsl
 r4.yz = r0.zw * float2(0.100000001,0.166666672) + r2.yz;
 r5.xy = r4.yz * float2(398.100006,398.100006) + r1.xx;
 r5.zw = floor(r5.xy);
 r5.xy = frac(r5.xy);
 ```
 
-The whole section is completely different, just switching the value to a decimal one, but the fract call is still there. Seems like the `FXC` compiler is indeed optimizing away the `fract` call if there's no real indication that the value passed to it is a decimal float. Although the line `r5.zw = float2(398,398) * r5.xy;` passes a non-decimal float, it somehow also thinks that `r5.xy` (or `o` from the original shader) contains no decimal part.
+The whole section is completely different, just switching the value to a decimal one, but the fract call is still there. Seems like the `FXC` compiler is indeed optimizing away the `fract` call if there's no real indication that the value passed to it is a decimal float. Although the line `r5.zw = float2(398,398) * r5.xy;` passes a non-decimal float, it somehow also assumes that `r5.xy` (or `o` from the original shader) contains no decimal part.
 
-I can't even inspect the source code for `FXC` because it's a proprietary shader compiler. Luckly, the new shader compiler for DirectX 12 is open-source.
-# What's next?
+I can't even inspect the source code for `FXC` because it's a proprietary shader compiler. Luckily, the new shader compiler for DirectX 12 is open-source.
+
+# What's Next?
 
 At this point, I'm satisfied with my results. What was just a shader-coding night turned into a full week of shader debugging and learning. But I know there's a lot more to be done in this case. I'd still want to get a minimum reproducible shader. If you have experience in graphics programming and want to keep investigating further, please do. Let me know if there's any info I missed.
 

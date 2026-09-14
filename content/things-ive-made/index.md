@@ -50,6 +50,7 @@ A page to show off some of the things I've made and worked on professionally and
 
 ## Generative Art
 
+ - [stuffy knows - visualization shader](https://www.shadertoy.com/view/7Xt3RS)
  - [Sleep Paralysis](https://www.shadertoy.com/view/DdKGDV) ([render](https://www.youtube.com/watch?v=yIkdXOrQlTI))
  - [Sea the Night](https://www.shadertoy.com/view/ssG3Wt) ([render](https://www.youtube.com/watch?v=rDinlO6VkTM]))
  - [Night Sneakings](https://www.shadertoy.com/view/tlVXRz) ([render](https://www.youtube.com/watch?v=1XoumiL3F9U))

@@ -15,7 +15,7 @@ The other night I wanted to implement a small Voronoi-diagram shader to use as a
   <source src="images/stuffyknows-shader.mp4" type="video/webm">
 </video>
 
-This is the final shader. You can also check it on [Shadertoy](https://www.shadertoy.com/view/NfGSzd). I still haven't worked on the video, but you can check the music on all digital platforms: [stuffy knows](https://www.tapelink.io/share/rdfYQLYn).
+This is the final shader. You can also check it on [Shadertoy](https://www.shadertoy.com/view/7Xt3RS). I still haven't worked on the video, but you can check the music on all digital platforms: [stuffy knows](https://www.tapelink.io/share/rdfYQLYn).
 
 # The Shader
 
@@ -59,7 +59,7 @@ That generates this:
 
 ![the final look for the shader](images/Pastedimage20260907235534.png)
 
-I also move through the palette, making this popping, moving effect that I really enjoy. The final shader is [available here](https://www.shadertoy.com/view/NfGSzd).
+I also move through the palette, making this popping, moving effect that I really enjoy. The final shader is [available here](https://www.shadertoy.com/view/7Xt3RS).
 
 # The Problem
 

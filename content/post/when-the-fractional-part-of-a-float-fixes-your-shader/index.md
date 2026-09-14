@@ -7,6 +7,12 @@ tags:
  - shaders
  - investigation
  - graphics-programming
+syndication:
+ - https://x.com/CrociDB/status/2099471012014240111
+ - https://mastodon.gamedev.place/@crocidb/117269318777618566
+ - https://bsky.app/profile/crocidb.bsky.social/post/3mvi3bctwyc2k
+ - https://www.linkedin.com/feed/update/urn:li:activity:7505237441243545601/
+ - https://www.reddit.com/r/programming/comments/1wg1wo7/when_the_fractional_part_of_a_float_fixes_your/
 ---
 
 The other night I wanted to implement a small Voronoi-diagram shader to use as a background to a music video, to show up the music project I recently finished. Voronoi Noise is type of algorithm I never implemented before, and I was always mesmerized by the geometric and often organic-ish way it looks. Without much direction in mind, I started implementing it and experimenting. I got it looking pretty cool and I was about to call it a day, but then next morning I found out that, in one of my computers only, there was a weird stutter to the animation. So I decided to dig into it to find out what the problem was. This is the write-up of my whole adventure of a week debugging and disassemblying shaders. There are a few plot twists to the story, and hopefully a lot of interesting information too.

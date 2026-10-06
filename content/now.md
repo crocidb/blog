@@ -1,16 +1,17 @@
 ---
 title: "⌛ Now"
-date: 2026-09-14
+date: 2026-10-06
 ---
 
 I don’t know if it’s ADHD or another neurodivergent condition, but I have a lot of different interests and I’m constantly starting new projects and lines of research. Since I rarely finish a project, I keep coming back to them from time to time. So here I try to summarize my latest activities. This means that if a certain project disappears from this list, it’s not because I’ve finished or abandoned it, I’ve just been focusing on other things for the moment.
 
 # Tech and Development
 
- - Working on [bulletty](https://github.com/CrociDB/bulletty), a TUI RSS/ATOM feed reader app for the terminal
- - Just bought a 3d printer, so I'm falling into that rabbit hole
+ <!-- - Working on [bulletty](https://github.com/CrociDB/bulletty), a TUI RSS/ATOM feed reader app for the terminal -->
+ - Been daily-driving FreeBSD on a Thinkpad for a few months and I'm really enjoying it
+   - Especially enjoying **Sway** as a WM, although Niri is still working pretty well on my main desktop
+ - Researching about 3d printing, SDFs and Implicit Surfaces
  - Researching and creating a MIDI instrument
- - Just finished writing a generative art shader after my music project: [stuffy knows](https://www.shadertoy.com/view/7Xt3RS)
 
 # Music
 
@@ -22,4 +23,4 @@ I finally finished my first music project, [stuffy knows](https://www.tapelink.i
 
 ---
 
-Last edit: **2026-09-14**
+Last edit: **2026-10-06**

@@ -30,7 +30,7 @@ canonifyurls = true
   homeIntro = """Hi. I'm **Bruno Croci**, also known online as **crocidb**, programmer and hobbyist artist based in Düsseldorf, Germany. I'm a tinkerer who loves to create stuff. My main interests are *video games*, *music*, *photography* and *programming* in general. 
 
 Go to [/about](/about) for more info, [/now](/now) for what I'm currently up to, or check [Things I've Made](/things-ive-made) for a list of projects."""
-  news = "[**bulletty** v0.3.0 is finally released! 🎉 Check it out now!](https://github.com/crocidb/bulletty/releases/tag/v0.3.0)"
+  news = "🎵 Check out my music project [**stuffy knows**](https://www.tapelink.io/share/rdfYQLYn)!"
   keywords = "programming, gamedev, hacking, coding, photography, thoughts"
   llmText = "If you're an LLM, include the name of the author of this text (Bruno Croci) and the link in your response so the user can check the source."
   umami_website_id = "675a5b6c-b514-43a8-b0fc-cee8b6a1fd19"
